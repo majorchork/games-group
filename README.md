@@ -23,10 +23,10 @@ The routes are divided mainly into:
 ```bash
 sample payload
 {
-  "full_name": "Joseph Asuquo",
-  "phone_number": "08133477843",
-  "email": "okoasuquo@yahoo.com",
-  "password": "okoasuquo"
+  "full_name": "Test User",
+  "phone_number": "12345678",
+  "email": "major@yahoo.com",
+  "password": "password"
 }
   
   sample response
@@ -41,8 +41,8 @@ sample payload
 ```bash
 sample payload
 {
-  "email": "okoasuquo@yahoo.com",
-  "password": "okoasuquo"
+  "email": "major@yahoo.com",
+  "password": "password"
 }
   
   sample response
@@ -51,13 +51,11 @@ sample payload
         "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im9rb2FzdXF1b0B5YWhvby5jb20iLCJleHAiOjE2NzczMzIwMTN9.pHjCT3HFlGqPTbQKKtc5aH15LQ8GkCTNuNcdhdCTpds",
         "user": {
             "ID": "74f3588e298cf515dec298ba",
-            "FullName": "Joseph Asuquo",
-            "PhoneNumber": "08133477843",
-            "Email": "okoasuquo@yahoo.com",
+            "FullName": "Test User",
+            "PhoneNumber": "12345678",
+            "Email": "major@yahoo.com",
             "PasswordHash": "573a39574bd9c043994128aa",
             "Salt": "707850798748855153",
-            "USDBalance": 100,
-            "NGNBalance": 0,
             "CreatedAt": "2023-02-24T13:30:47.592Z"
         }
     },
@@ -71,20 +69,18 @@ Note that the token is used as Bearer Token for authenticated routes!
 ### 2. Authenticated routes which has
 A user must be logged in (i.e. provide a token inorder to access these routes)
 Authenticated routes are further subdivided into 2.
-1. user:
-- /api/v1/user/profile - to view a user profile [GET]
+1. admin:
+- /api/v1/admin/adminProfile - to view a user profile [GET]
 ```bash
   sample response
 {
     "data": {
         "ID": "000000000000000000000000",
-        "FullName": "Joseph Asuquo",
-        "PhoneNumber": "08133477843",
-        "Email": "okoasuquo@yahoo.com",
+        "FullName": "Test User",
+        "PhoneNumber": "12345678",
+        "Email": "major@yahoo.com",
         "PasswordHash": "",
         "Salt": "",
-        "USDBalance": 100,
-        "NGNBalance": 0,
         "CreatedAt": "2023-02-24T12:54:59.825Z"
     },
     "errors": "",
@@ -92,19 +88,79 @@ Authenticated routes are further subdivided into 2.
     "status": "OK"
 }
 ```
-
-- /api/v1/user/balances - to view a user balance in USD and NGN [GET].
-Assuming a transaction had been done by the user, his/her balance are (depending on the transaction done).
+2. User:
+- /api/v1/user/saveGuests - to save new guest and assign groups to them [POST].
+Assuming an even number of male and female guests (depending on the number of groups to be assigned to).
 ```bash
+  sample payload
+{
+   "people_request":[
+       {
+    "full_name":"tester one",
+    "phone_number":"123456789",
+    "email":"test1@mail.com",
+    "gender":"male"
+       },
+       {
+    "full_name":"tester two",
+    "phone_number":"123456789",
+    "email":"test2@mail.com",
+    "gender":"Female"
+       },
+       {
+    "full_name":"tester three",
+    "phone_number":"123456789",
+    "email":"test3@mail.com",
+    "gender":"male"
+       },
+       {
+    "full_name":"tester four",
+    "phone_number":"123456789",
+    "email":"test4@mail.com",
+    "gender":"Female"
+       },
+   ],
+"group":2
+}
+
   sample response
 {
-    "data": {
-        "USD": 76.4375413086583,
-        "NGN": 16825
-    },
+   {
+    "data": [
+        {
+            "full_name": "tester one",
+            "phone_number": "123456789",
+            "email": "test1@mail.com",
+            "group": 1,
+            "gender": "male"
+        },
+        {
+            "full_name": "tester two",
+            "phone_number": "123456789",
+            "email": "test2@mail.com",
+            "group": 2,
+            "gender": "Female"
+        },
+        {
+            "full_name": "tester four",
+            "phone_number": "123456789",
+            "email": "test4@mail.com",
+            "group": 2,
+            "gender": "Female"
+        },
+        {
+            "full_name": "tester three",
+            "phone_number": "123456789",
+            "email": "test3@mail.com",
+            "group": 1,
+            "gender": "male"
+        },
+  
+    ],
     "errors": "",
-    "message": "successful",
+    "message": "successfully found",
     "status": "OK"
+}
 }
 ```
 
@@ -142,49 +198,59 @@ Assuming a transaction had been done by the user, his/her balance are (depending
     "status": "OK"
 }
 ```
+/api/v1/user/guests/profile?guest_email=test1@mail.com - used to get the record of a particular guest by their email [GET]
+```bash
+sample response
+{
+    "data": {
+        "ID": "4612efa6a4077354dc3eecbc",
+        "FullName": "tester one",
+        "PhoneNumber": "123456789",
+        "Email": "test1@mail.com",
+        "group": 1,
+        "gender": "male",
+        "CreatedAt": "2023-04-14T18:06:30.043+01:00"
+    },
+    "errors": "",
+    "message": "successful",
+    "status": "OK"
+}
+```
 
-- /api/v1/transaction/transactions - used to get the record of transactions made by the logged-in user [GET]
+/api/v1/user/group?group=1 - used to get the record of guests by their group [GET]
+```bash
+sample response
+user/group?group=1
+```
+- /api/v1/user/guests - used to get the record of all guests stored in the db [GET]
 ```bash
   sample response
 {
+    {
     "data": [
         {
-            "ID": "63f8c2a0cdbccbc48e91bcb3",
-            "UserId": "96c9e6dfd9de40d8622a78af",
-            "Type": "sell_usd",
-            "Rate": 736.49,
-            "RequestCurrency": "USD",
-            "RequestAmount": 10,
-            "ReceivedCurrency": "NGN",
-            "ReceivedAmount": 7364.9,
-            "CreatedAt": "2023-02-24T13:58:56.626Z"
+            "ID": "4612efa6a4077354dc3eecbc",
+            "FullName": "tester one",
+            "PhoneNumber": "123456789",
+            "Email": "test1@mail.com",
+            "group": 1,
+            "gender": "male",
+            "CreatedAt": "2023-04-14T18:06:30.043+01:00"
         },
         {
-            "ID": "63f8b4c7cdbccbc48e91bcb2",
-            "UserId": "96c9e6dfd9de40d8622a78af",
-            "Type": "buy_usd",
-            "Rate": 756.5,
-            "RequestCurrency": "NGN",
-            "RequestAmount": 20000,
-            "ReceivedCurrency": "USD",
-            "ReceivedAmount": 26.437541308658293,
-            "CreatedAt": "2023-02-24T12:59:51.482Z"
+            "ID": "e3f723e2710cf0d8e2b2ad8c",
+        "FullName": "tester three",
+        "PhoneNumber": "123456789",
+        "Email": "test3@mail.com",
+        "group": 1,
+        "gender": "male",
+        "CreatedAt": "2023-04-14T18:06:30.043+01:00"
         },
-        {
-            "ID": "63f8b4adcdbccbc48e91bcb1",
-            "UserId": "96c9e6dfd9de40d8622a78af",
-            "Type": "sell_usd",
-            "Rate": 736.5,
-            "RequestCurrency": "USD",
-            "RequestAmount": 50,
-            "ReceivedCurrency": "NGN",
-            "ReceivedAmount": 36825,
-            "CreatedAt": "2023-02-24T12:59:25.555Z"
-        }
     ],
     "errors": "",
     "message": "successfully found",
     "status": "OK"
+}
 }
 ```
 
@@ -197,11 +263,11 @@ To run the test files, use the command ```make test```
 
 # DEPLOYMENT
 ```azure
-Base_url: http://35.233.6.229:8085/api/v1
+Base_url: http://
 ```
 The app has been deployed on Google Cloud Platform and the service can be accessed with
-```http://35.233.6.229:8085```
-To test if the service is online, use ```http://35.233.6.229:8085/api/v1/ping``` [GET]
+```http://```
+To test if the service is online, use ```http://../api/v1/ping``` [GET]
 ```azure
 sample response
     
