@@ -10,6 +10,6 @@ FROM alpine:3.13
 WORKDIR /app
 COPY --from=build /app/main .
 
-EXPOSE 1759
+EXPOSE 8085
 CMD ["/app/main"]
 

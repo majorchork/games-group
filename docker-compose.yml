@@ -17,7 +17,7 @@ services:
     depends_on:
       - mongo
     ports:
-      - "1759:1759"
+      - "8085:8085"
     build: .
     image: majorchork/gamegroup:v1
     environment:
